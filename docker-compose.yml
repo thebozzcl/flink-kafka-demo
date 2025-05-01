@@ -64,3 +64,12 @@ services:
     volumes:
       - ./scripts/update_run.sh:/tmp/update_run.sh
     command: "bash -c 'if [ ! -f /tmp/update_run.sh ]; then echo \"ERROR: Did you forget the update_run.sh file that came with this docker-compose.yml file?\" && exit 1 ; else /tmp/update_run.sh && /etc/confluent/docker/run ; fi'"
+
+  kafka-init-topics:
+    image: confluentinc/cp-kafka:7.2.1
+    depends_on:
+      - kafka
+    command: "bash -c 'echo Waiting for Kafka to be ready... && \
+               cub kafka-ready -b kafka:29092 1 30 && \
+               kafka-topics --create --topic input-topic --partitions 6 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092 && \
+               kafka-topics --create --topic output-topic --partitions 6 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092'"
