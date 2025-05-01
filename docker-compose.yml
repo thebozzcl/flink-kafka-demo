@@ -75,6 +75,7 @@ services:
       - |
         FLINK_PROPERTIES=
         jobmanager.rpc.address: jobmanager
+        parallelism.default: 6
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8081/overview || exit 1"]
       interval: 10s
@@ -96,3 +97,4 @@ services:
         FLINK_PROPERTIES=
         jobmanager.rpc.address: jobmanager
         taskmanager.numberOfTaskSlots: 3
+        parallelism.default: 6
