@@ -18,13 +18,19 @@ import java.time.Duration;
 import java.util.Arrays;
 
 public class FlinkDemo {
+    private static final Duration WINDOW_DURATION = Duration.ofSeconds(10);
+    private static final String KAFKA_BOOTSTRAP_SERVERS = "kafka:29092";
+    private static final String KAFKA_INPUT_TOPIC = "input-topic";
+    private static final String KAFKA_OUTPUT_TOPIC = "output-topic";
+    private static final String KAFKA_GROUP_ID = "flink-demo-group";
+
     public static void main(final String[] args) throws Exception {
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
         final KafkaSource<String> source = KafkaSource.<String>builder()
-                .setBootstrapServers("kafka:29092")
-                .setTopics("input-topic")
-                .setGroupId("flink-word-count-group")
+                .setBootstrapServers(KAFKA_BOOTSTRAP_SERVERS)
+                .setTopics(KAFKA_INPUT_TOPIC)
+                .setGroupId(KAFKA_GROUP_ID)
                 .setStartingOffsets(OffsetsInitializer.earliest())
                 .setValueOnlyDeserializer(new SimpleStringSchema())
                 .build();
@@ -37,14 +43,14 @@ public class FlinkDemo {
         final DataStream<String> wordCounts = text
                 .flatMap(new WordSplitter())
                 .keyBy(value -> value.f0)
-                .window(TumblingProcessingTimeWindows.of(Duration.ofSeconds(5)))
+                .window(TumblingProcessingTimeWindows.of(WINDOW_DURATION))
                 .sum(1)
                 .map(tuple -> tuple.f0 + ":" + tuple.f1);
 
         final KafkaSink<String> sink = KafkaSink.<String>builder()
-                .setBootstrapServers("kafka:29092")
+                .setBootstrapServers(KAFKA_BOOTSTRAP_SERVERS)
                 .setRecordSerializer(KafkaRecordSerializationSchema.builder()
-                        .setTopic("output-topic")
+                        .setTopic(KAFKA_OUTPUT_TOPIC)
                         .setValueSerializationSchema(new SimpleStringSchema())
                         .build())
                 .setDeliveryGuarantee(DeliveryGuarantee.AT_LEAST_ONCE)
