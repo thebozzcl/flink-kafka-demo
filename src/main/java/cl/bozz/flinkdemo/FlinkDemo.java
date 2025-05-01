@@ -69,7 +69,7 @@ public class FlinkDemo {
             final String[] words = value.toLowerCase().split("\\W+");
 
             // Emit each word with an initial count of 1
-            for (String word : words) {
+            for (final String word : words) {
                 if (!word.isEmpty()) {
                     out.collect(new Tuple2<>(word, 1));
                 }
