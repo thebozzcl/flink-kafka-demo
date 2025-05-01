@@ -15,13 +15,12 @@ import org.apache.flink.util.Collector;
 import org.apache.flink.connector.base.DeliveryGuarantee;
 
 import java.time.Duration;
+import java.util.Arrays;
 
 public class FlinkDemo {
     public static void main(final String[] args) throws Exception {
-        // Set up the execution environment
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
-        // Configure Kafka source
         final KafkaSource<String> source = KafkaSource.<String>builder()
                 .setBootstrapServers("kafka:29092")
                 .setTopics("input-topic")
@@ -30,13 +29,11 @@ public class FlinkDemo {
                 .setValueOnlyDeserializer(new SimpleStringSchema())
                 .build();
 
-        // Create input stream from Kafka
         final DataStream<String> text = env.fromSource(
                 source,
                 WatermarkStrategy.noWatermarks(),
                 "Kafka Source");
 
-        // Process the input stream
         final DataStream<String> wordCounts = text
                 .flatMap(new WordSplitter())
                 .keyBy(value -> value.f0)
@@ -44,7 +41,6 @@ public class FlinkDemo {
                 .sum(1)
                 .map(tuple -> tuple.f0 + ":" + tuple.f1);
 
-        // Configure Kafka sink
         final KafkaSink<String> sink = KafkaSink.<String>builder()
                 .setBootstrapServers("kafka:29092")
                 .setRecordSerializer(KafkaRecordSerializationSchema.builder()
@@ -54,26 +50,18 @@ public class FlinkDemo {
                 .setDeliveryGuarantee(DeliveryGuarantee.AT_LEAST_ONCE)
                 .build();
 
-        // Write results to Kafka
         wordCounts.sinkTo(sink);
 
-        // Execute the pipeline
-        env.execute("Flink Word Count with Kafka");
+        env.execute("Flink word-count demo with Kafka I/O");
     }
 
-    // FlatMap function to split text into words and count occurrences
     public static class WordSplitter implements FlatMapFunction<String, Tuple2<String, Integer>> {
         @Override
         public void flatMap(final String value, final Collector<Tuple2<String, Integer>> out) {
-            // Split the line into words
-            final String[] words = value.toLowerCase().split("\\W+");
-
-            // Emit each word with an initial count of 1
-            for (final String word : words) {
-                if (!word.isEmpty()) {
-                    out.collect(new Tuple2<>(word, 1));
-                }
-            }
+            Arrays.stream(value.toLowerCase().split("\\W+"))
+                    .filter(word -> !word.isEmpty())
+                    .map(word -> new Tuple2<>(word, 1))
+                    .forEach(out::collect);
         }
     }
 }
