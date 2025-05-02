@@ -1,5 +1,6 @@
 #!/bin/sh
 # This script is required to run kafka cluster (without zookeeper)
+# Copied from https://github.com/provectus/kafka-ui/blob/master/documentation/compose/scripts/update_run.sh
 
 # Docker workaround: Remove check for KAFKA_ZOOKEEPER_CONNECT parameter
 sed -i '/KAFKA_ZOOKEEPER_CONNECT/d' /etc/confluent/docker/configure
