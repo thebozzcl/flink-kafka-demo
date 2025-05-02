@@ -9,10 +9,12 @@ This is a simple, self-contained Apache Flink demo I put together. It runs a sim
 
 ## Sources
 
-The docker-compose.yaml file was created based on the following examples:
+I wrote the docker-compose.yaml file based on the following examples:
 * [Apache Flink documentation](https://nightlies.apache.org/flink/flink-docs-release-2.0/docs/deployment/resource-providers/standalone/docker/#flink-with-docker-compose)
 * [Kafka-UI example config](https://github.com/provectus/kafka-ui/blob/master/documentation/compose/kafka-ui.yaml)
 * Random bits and pieces found online
+
+I generated the pipeline code using Claude 3.7, then tweaked it and fixed some issues.
 
 ## Instructions
 
