@@ -1,3 +1,5 @@
+// Copied from https://nightlies.apache.org/flink/flink-docs-release-2.0/docs/dev/configuration/overview/#getting-started
+
 plugins {
     id 'java'
     id 'application'

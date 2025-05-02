@@ -14,6 +14,8 @@ I wrote the docker-compose.yaml file based on the following examples:
 * [Kafka-UI example config](https://github.com/provectus/kafka-ui/blob/master/documentation/compose/kafka-ui.yaml)
 * Random bits and pieces found online
 
+I copied `build.gradle` from [the official Flink documentation](https://nightlies.apache.org/flink/flink-docs-release-2.0/docs/dev/configuration/overview/#getting-started).
+
 I generated the pipeline code using Claude 3.7, then tweaked it and fixed some issues.
 
 ## Instructions
