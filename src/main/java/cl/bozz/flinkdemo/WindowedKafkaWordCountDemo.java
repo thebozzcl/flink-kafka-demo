@@ -17,8 +17,8 @@ import org.apache.flink.connector.base.DeliveryGuarantee;
 import java.time.Duration;
 import java.util.Arrays;
 
-public class FlinkDemo {
-    private static final Duration WINDOW_DURATION = Duration.ofSeconds(10);
+public class WindowedKafkaWordCountDemo {
+    private static final Duration WINDOW_DURATION = Duration.ofMinutes(1);
     private static final String KAFKA_BOOTSTRAP_SERVERS = "kafka:29092";
     private static final String KAFKA_INPUT_TOPIC = "input-topic";
     private static final String KAFKA_OUTPUT_TOPIC = "output-topic";

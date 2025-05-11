@@ -70,7 +70,7 @@ services:
       - "8081:8081"
     depends_on:
       - kafka-init-topics
-    command: standalone-job --job-classname cl.bozz.flinkdemo.FlinkDemo --jars /opt/flink/usrlib/flink-demo-1.0-all.jar
+    command: standalone-job --job-classname cl.bozz.flinkdemo.WindowedKafkaWordCountDemo --jars /opt/flink/usrlib/flink-demo-1.0-all.jar
     environment:
       - |
         FLINK_PROPERTIES=
